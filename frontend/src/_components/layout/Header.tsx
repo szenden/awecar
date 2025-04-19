@@ -63,7 +63,7 @@ function MobileNavigation({ onTryDemoClick }: MobileNavigationProps) {
       >
         <hr className="m-2 border-slate-300/40" />
         <Button
-          href="https://github.com/yourusername/carcare"
+          href="https://github.com/rene98c/carcareco"
           variant="outline"
         >
           View on GitHub
@@ -108,7 +108,7 @@ export function  Header({ onTryDemoClick }: HeaderProps) {
           <div className="flex items-center gap-x-5 md:gap-x-8">
             <div className="hidden md:block">
               <Button
-                href="https://github.com/yourusername/carcare"
+                href="https://github.com/rene98c/carcareco"
                 variant="outline"
               >
                 View on GitHub
