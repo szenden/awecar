@@ -15,7 +15,14 @@ namespace Carmasters.Core.Application.Extensions.DependencyInjection
             {
                 void policyDefaults(CorsPolicyBuilder policy, string host)
                 {
-                    policy.SetIsOriginAllowed(origin => new Uri(origin).Host == host);
+                    if (host == "*")
+                    {
+                        policy.SetIsOriginAllowed(x => true);
+                    }
+                    else
+                    { 
+                        policy.SetIsOriginAllowed(origin => new Uri(origin).Host == host);
+                    } 
                     policy.WithHeaders("Content-Type", "Authorization");
                     policy.WithMethods("GET", "PUT", "POST", "DELETE", "OPTIONS");
                 }

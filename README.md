@@ -28,7 +28,7 @@ Click **"Try the demo"** on the landing page and enter a company name to spin up
 
 ```bash
 git clone https://github.com/rene98c/carcareco
-cd carcare
+cd carcareco
 
 # Generate random secrets and config (on windows)
 powershell -ExecutionPolicy Bypass -File scripts/setup-secrets.ps1
