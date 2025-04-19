@@ -17,12 +17,9 @@ namespace Carmasters.Core.Application.Extensions.DependencyInjection
                 {
                     if (host == "*") 
                     {
-                        options.AddPolicy("AllowAll", policy =>
-                        {
-                            policy.AllowAnyOrigin()
-                                 .AllowAnyHeader()
-                                 .AllowAnyMethod();
-                        });
+                        policy.AllowAnyOrigin()
+                         .AllowAnyHeader()
+                         .AllowAnyMethod();
                     }
                     else
                     {
