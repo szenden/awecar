@@ -72,7 +72,7 @@ Password: carcare
 
 ## 🚀 Deploying on Linux (Debian 12)
 
-Follow these instructions to deploy **CarCare** on Debian 12, including considerations from the provided CI workflow files.
+Follow these instructions to deploy **CarCare** on Debian 12
 
 ### 1. Install System Dependencies
 ```bash
@@ -231,7 +231,23 @@ Run database migrations:
 sudo /opt/apps/dbup/DbUp
 ```
 
-### 8. Access Your Deployment
+### 8. Nginx Configuration
+
+Create Nginx configurations for API and frontend:
+
+- [Download API Nginx configuration](docs/nginx/carcareapi.nginx.example)
+- [Download Frontend Nginx configuration](docs/nginx/carcareui.nginx.example)
+
+Copy these files to `/etc/nginx/sites-available/`, then enable sites and restart Nginx:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/carcareapi /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/carcareui /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+### 9. Access Your Deployment
 
 - **Frontend:** `https://yourdomain.com`
 - **Backend API:** `https://api.yourdomain.com`
@@ -243,6 +259,7 @@ Username: admin
 Password: carcare
 ```
 
+All set!
 
 
 ## 📄 License
