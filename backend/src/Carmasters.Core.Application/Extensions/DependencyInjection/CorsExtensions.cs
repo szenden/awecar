@@ -15,21 +15,26 @@ namespace Carmasters.Core.Application.Extensions.DependencyInjection
             {
                 void policyDefaults(CorsPolicyBuilder policy, string host)
                 {
-                    if (host == "*")
+                    if (host == "*") 
                     {
-                        policy.SetIsOriginAllowed(x => true);
+                        options.AddPolicy("AllowAll", policy =>
+                        {
+                            policy.AllowAnyOrigin()
+                                 .AllowAnyHeader()
+                                 .AllowAnyMethod();
+                        });
                     }
                     else
-                    { 
+                    {
                         policy.SetIsOriginAllowed(origin => new Uri(origin).Host == host);
+                        policy.WithHeaders("Content-Type", "Authorization");
+                        policy.WithMethods("GET", "PUT", "POST", "DELETE", "OPTIONS");
                     } 
-                    policy.WithHeaders("Content-Type", "Authorization");
-                    policy.WithMethods("GET", "PUT", "POST", "DELETE", "OPTIONS");
                 }
                 var appHost = configuration.GetSection("Cors:AppHost").Value;
                 if (string.IsNullOrWhiteSpace(appHost)) throw new Exception("Cors host not configured.");
 
-                options.AddPolicy("localhost-dev", policy => policyDefaults(policy, "localhost"));
+                options.AddPolicy("localhost-dev", policy => policyDefaults(policy, "*"));
                 options.AddPolicy("production", policy => policyDefaults(policy, appHost));
             });
         }
