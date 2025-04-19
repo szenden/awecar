@@ -27,7 +27,7 @@ Click **"Try the demo"** on the landing page and enter a company name to spin up
 ## 🚀 Getting Started (Local Docker)
 
 ```bash
-git clone https://github.com/your-org/carcare.git
+git clone https://github.com/rene98c/carcareco
 cd carcare
 
 # Generate random secrets and config (on windows)
@@ -50,12 +50,16 @@ docker compose up --build -d
 - Mail preview: [http://localhost:8025](http://localhost:8025)
 
 ### 🔐 Default Login
-When running CarCare locally using Docker, a default user is created for convenience:
+When running CarCare locally, a default user is created for convenience:
 
 ```txt
 Username: admin  
 Password: carcare
 ```
+
+## 🚀 Deploying on Linux (Debian 12)
+
+.. coming up soon
 
 ## 📸 Screenshots
 
