@@ -2,62 +2,60 @@ name: Build Workflow
 
 on:
   workflow_call:
-      inputs:
-        application-host:
-          required: true
-          type: string
-        application-path:
-          required: true
-          type: string
-        application-host-user:
-          required: true
-          type: string
-        api-url:
-          required: true
-          type: string
-        public-api-url:
-          required: true
-          type: string 
-        ssh-key:
-          required: true
-          type: string
-        consumer-secret:
-          required: true
-          type: string
-        session-secret:
-          required: true
-          type: string
+    inputs:
+      application-host:
+        required: true
+        type: string
+      application-path:
+        required: true
+        type: string
+      application-host-user:
+        required: true
+        type: string
+      api-url:
+        required: true
+        type: string
+      public-api-url:
+        required: true
+        type: string 
+      ssh-key:
+        required: true
+        type: string
+      consumer-secret:
+        required: true
+        type: string
+      session-secret:
+        required: true
+        type: string
 
 jobs:
   Run-Build:
     runs-on: ubuntu-latest
-    defaults:                 # 👈 works with Gitea/Actions runners
+    defaults:
       run:
         working-directory: frontend
     steps:
     - uses: actions/checkout@v4
-      with:
-        working-directory: frontend 
+    
     - uses: actions/setup-node@v4
       with: 
         node-version: '22.x' 
         cache: 'npm'
         cache-dependency-path: ./frontend/package-lock.json
+        
     - name: Restore cache
       uses: actions/cache@v4
       with:
-        working-directory: frontend 
-        # See here for caching with `yarn` https://github.com/actions/cache/blob/main/examples.md#node---yarn or you can leverage caching with actions/setup-node https://github.com/actions/setup-node
         path: |
           ~/.npm
           ${{ github.workspace }}/.next/cache
-        # Generate a new cache whenever packages or source files change.
         key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-        # If source files changed but packages didn't, rebuild from a prior cache.
         restore-keys: |
           ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+          
     - name: Install dependencies
       run: npm install
+      
     - name: 'Create env file'
       run: |
        touch .env
@@ -69,23 +67,27 @@ jobs:
        echo NEXT_PUBLIC_SESSION_DIALOG_TIMEOUT=120 >> .env
        echo NEXT_TELEMETRY_DISABLED=1 >> .env
        cat .env
+       
     - name: Running build
       run: npm run build
+      
     - name: Remove src folder
       run: rm -rf src
+      
     - name: Deploy with rsync
       uses: burnett01/rsync-deployments@7.0.2
       with: 
-        switches: -avzr --delete  --exclude=".git" --exclude=".gitea" --exclude=".vscode" --exclude="node_modules"
+        switches: -avzr --delete  --exclude=".git" --exclude=".github" --exclude=".vscode" --exclude="node_modules"
         path: ./frontend/
         remote_path: ${{ inputs.application-path }}carcare-app/
         remote_host: ${{ inputs.application-host }}
         remote_user: ${{ inputs.application-host-user }}
-        remote_key:  ${{ inputs.ssh-key }}
+        remote_key: ${{ inputs.ssh-key }}
+        
     - name: Reloading carcare-app pm2 process
       uses: appleboy/ssh-action@v1.2.1
       with:
         host: ${{ inputs.application-host }}
         username: ${{ inputs.application-host-user }}
-        key:  ${{ inputs.ssh-key }}
+        key: ${{ inputs.ssh-key }}
         script: "cd ${{ inputs.application-path }}carcare-app; pwd; npm install; pm2 reload carcare-app"

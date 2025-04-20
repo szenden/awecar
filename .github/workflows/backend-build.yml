@@ -73,7 +73,6 @@ jobs:
 
       - name: Populate Secrets
         uses: microsoft/variable-substitution@v1
-        working-directory: backend               # Action itself needs the cwd
         with:
           files: "backend/src/Carmasters.Http.Api/appsettings.Secrets.json"
         env:
@@ -82,7 +81,7 @@ jobs:
           DbOptions.Host: "${{ inputs.db-host }}"
           DbOptions.UserId: "postgres"
           DbOptions.Password: "${{ inputs.db-password }}"
-          DbOptions.MultiTenancy.Enabled : true
+          DbOptions.MultiTenancy.Enabled: true
           SmtpOptions.Host: "${{ inputs.smtp-host }}"
           SmtpOptions.Port: "${{ inputs.smtp-port }}"
           SmtpOptions.User: "${{ inputs.smtp-user }}"
@@ -95,7 +94,7 @@ jobs:
       - name: Build API
         run: dotnet build -c Release -o ../../dist/carcare
         working-directory: backend/src/Carmasters.Http.Api
-        # After your build step and before the rsync deployment
+        
       - name: Copy Secrets to build output
         working-directory: backend/src/Carmasters.Http.Api
         run: |
@@ -127,7 +126,6 @@ jobs:
           remote_user: ${{ inputs.application-host-user }}
           remote_key: ${{ inputs.ssh-key }}
           
-
       - name: Run DbUp migrations and reload API
         uses: appleboy/ssh-action@v1.2.1
         with:
