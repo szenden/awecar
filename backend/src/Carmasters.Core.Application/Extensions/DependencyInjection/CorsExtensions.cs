@@ -10,29 +10,28 @@ namespace Carmasters.Core.Application.Extensions.DependencyInjection
     {
         public static IServiceCollection AddCorsToApp(this IServiceCollection services, IConfiguration configuration)
         {
-            
             return services.AddCors(options =>
             {
-                void policyDefaults(CorsPolicyBuilder policy, string host)
-                {
-                    if (host == "*") 
+                options.AddPolicy("DefaultPolicy", policy =>
+                { 
+                    var corsMode = configuration.GetValue<string>("Cors:Mode") ?? "restricted";
+
+                    if (corsMode.ToLower() == "open")
                     {
                         policy.AllowAnyOrigin()
-                         .AllowAnyHeader()
-                         .AllowAnyMethod();
+                             .AllowAnyHeader()
+                             .AllowAnyMethod();
                     }
                     else
                     {
-                        policy.SetIsOriginAllowed(origin => new Uri(origin).Host == host);
+                        var appHost = configuration.GetSection("Cors:AppHost").Value;
+                        if (string.IsNullOrWhiteSpace(appHost)) throw new Exception("Cors host not configured.");
+
+                        policy.SetIsOriginAllowed(origin => new Uri(origin).Host == appHost);
                         policy.WithHeaders("Content-Type", "Authorization");
                         policy.WithMethods("GET", "PUT", "POST", "DELETE", "OPTIONS");
-                    } 
-                }
-                var appHost = configuration.GetSection("Cors:AppHost").Value;
-                if (string.IsNullOrWhiteSpace(appHost)) throw new Exception("Cors host not configured.");
-
-                options.AddPolicy("localhost-dev", policy => policyDefaults(policy, "*"));
-                options.AddPolicy("production", policy => policyDefaults(policy, appHost));
+                    }
+                });
             });
         }
     }
