@@ -6,13 +6,14 @@ namespace Carmasters.Core.Application.Authorization
 {
     public class ClaimsPrincipalBuilder 
     {
-        private static ClaimsPrincipal Build(string name, string tenantName, string employeeId,bool publicUse) 
+        private static ClaimsPrincipal Build(string name, string fullName, string tenantName, string employeeId, bool publicUse)
         {
             var claims = new List<Claim> {
-                    new Claim(ClaimTypes.Name, name),
-                    new Claim(ClaimTypes.Spn, tenantName),
-                    new Claim(ClaimTypes.UserData, employeeId), 
-                };
+            new Claim(ClaimTypes.Name, name),
+            new Claim("FullName", fullName),
+            new Claim(ClaimTypes.Spn, tenantName),
+            new Claim(ClaimTypes.UserData, employeeId),
+        };
 
             if (!publicUse)
             {
@@ -20,12 +21,12 @@ namespace Carmasters.Core.Application.Authorization
             }
 
             var identity = new ClaimsIdentity(claims, "Basic");
-           
+
             var principal = new ClaimsPrincipal(identity);
-          
+
             return principal;
         }
-               
-        public static ClaimsPrincipal Build(User user,bool publicUse) => Build(user.UserName, user.Id.TenantName, user.Id.EmployeeId.ToString(), publicUse);
+
+        public static ClaimsPrincipal Build(User user,string fullName,bool publicUse) => Build(user.UserName,fullName, user.Id.TenantName, user.Id.EmployeeId.ToString(), publicUse);
     }
 } 

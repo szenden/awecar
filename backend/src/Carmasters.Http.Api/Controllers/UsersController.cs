@@ -105,8 +105,9 @@ All authenticated user operations; decorate the whole class with [TenantRateLimi
                 return Unauthorized();
             }
 
-            var internalUsePrincipal = ClaimsPrincipalBuilder.Build(user, false);
-            var publicUsePrincipal = ClaimsPrincipalBuilder.Build(user, true); 
+            var fullName = repository.GetFullName(model.Username);
+            var internalUsePrincipal = ClaimsPrincipalBuilder.Build(user, fullName, false);
+            var publicUsePrincipal = ClaimsPrincipalBuilder.Build(user, fullName, true); 
 
             return Ok(new
             {
@@ -135,32 +136,8 @@ All authenticated user operations; decorate the whole class with [TenantRateLimi
                 return File(new byte[0], "image/jpeg");
             }
         }
-        [TenantRateLimit]
-        [Authorize(Policy = "ServerSidePolicy")]
-        [HttpGet("profile/fullname")]
-        public string GetUserFullName() 
-        {
-            try
-            {
-                //TODO put this in jwt token?
-                var employeeId = this.EmployeeId();
-
-                var session = serviceProvider.GetRequiredService<NHibernate.ISession>();
-                //todo encode this information into public cookie? along the public jwt...
-                var nameData = session.QueryOver<Employee>().Where(x => x.Id == employeeId.GetValueOrDefault())
-                    .SelectList(l => l.
-                          Select(x => x.FirstName).
-                          Select(x => x.LastName)).SingleOrDefault<object[]>();
-                if (nameData == null || !nameData.Any()) return string.Empty;
-                return $"{nameData[0]} {nameData[1]}";
-            }
-            catch (Exception ex) //need to check this if fails, right now it has crashed the app multiple times
-            {
-                logger.LogError(ex,"Cannot resolve user fullname");
-                return string.Empty;
-            }
+        
           
-        }
         [TenantRateLimit]
         [Authorize(Policy = "ServerSidePolicy")] 
         [HttpPost("extendsession")]

@@ -56,10 +56,12 @@ export default function Home() {
         setIsLoading(false);
         return;
       }
-      
+     
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `Error: ${response.status}`);
+        const errorData = await response.text();
+        setError(errorData || 'Could not create demo account. Please try again later.');
+        setIsLoading(false);
+        return;
       }
       
       const data = await response.json()

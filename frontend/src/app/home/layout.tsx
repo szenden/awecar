@@ -4,21 +4,30 @@
 import { cookies } from 'next/headers';
 import Nav from './_components/layout/Nav'
 import NavDialog from './_components/layout/NavDialog'
-import ToastMessages from '@/_components/ToastMessages' 
-import { httpGet } from '@/_lib/server/query-api';
+import ToastMessages from '@/_components/ToastMessages'  
 import { redirect } from 'next/navigation';
+import { jwtDecode } from 'jwt-decode';
 
- 
+interface CustomJwtPayload {
+    FullName?: string; 
+  }
 export default async function Layout({ children }: { children: React.ReactNode }) {
     
-    const response = await httpGet('users/profile/fullname');
-    const fullName =  await response.text();
+    const jwt = (await cookies()).get('jwt')?.value;
     
-    if(!fullName) {
+    if(!jwt) {
         redirect('/home/logout'); 
     }
- 
-    const jwt = (await cookies()).get('jwt')?.value;
+    
+    // Decode the JWT to get the claims
+    const decodedToken = jwtDecode<CustomJwtPayload>(jwt);
+    const fullName = decodedToken.FullName || ''; // Extract the FullName claim
+    
+    // If there's no full name in the token, you might want to redirect or handle it
+    if(!fullName) {
+        redirect('/home/logout');
+    }
+
     const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/users/profilepicture/${jwt}`
     return (
         <>
