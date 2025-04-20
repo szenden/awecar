@@ -5,6 +5,7 @@ import {
 } from '@heroicons/react/24/outline'
 import clsx from "clsx" 
 import Image from 'next/image'
+import imageLoader from '../../../../../imageLoader'
 const userNavigation = [
     { name: 'My profile', href: '/home/profile' },
     { name: 'Sign out', href: '/home/logout' },
@@ -30,6 +31,7 @@ export default function ProfileMenu({
                                    <span className="sr-only">Open user menu</span>
 
                                     <Image alt={fullName}  
+                                      loader={imageLoader}
                                        src={imageUrl}
                                        width="100"
                                        height="100"
