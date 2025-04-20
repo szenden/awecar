@@ -41,7 +41,7 @@ namespace Carmasters.Core.Application.Services
 
             string tenantName = ShortGuid.NewGuid();
             string username = $"demo{tenantName}";
-            string password = GenerateRandomPassword();
+            string password = "carcare";
             string hashedPassword = Authorization.PasswordHasher.getHash(password);
 
             // Create tenant database from template
@@ -414,21 +414,7 @@ namespace Carmasters.Core.Application.Services
                     Total = 29.99,
                     TotalWithVat = 35.99
                 });
-        }
-
-
-        private string GenerateRandomPassword()
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var random = new Random();
-            var result = new char[8];
-
-            for (int i = 0; i < result.Length; i++)
-            {
-                result[i] = chars[random.Next(chars.Length)];
-            }
-
-            return new string(result);
-        }
+        } 
+         
     }
 }

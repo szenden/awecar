@@ -4,8 +4,7 @@ import {
   EllipsisVerticalIcon, 
 } from '@heroicons/react/24/outline'
 import clsx from "clsx" 
-import Image from 'next/image'
-import imageLoader from '../../../../../imageLoader'
+import Image from 'next/image' 
 const userNavigation = [
     { name: 'My profile', href: '/home/profile' },
     { name: 'Sign out', href: '/home/logout' },
@@ -30,8 +29,7 @@ export default function ProfileMenu({
                                <MenuButton className={clsx(onSmallScreen&&"-m-1.5","flex items-center p-1.5")}>
                                    <span className="sr-only">Open user menu</span>
 
-                                    <Image alt={fullName}  
-                                      loader={imageLoader}
+                                    <Image alt={fullName}   
                                        src={imageUrl}
                                        width="100"
                                        height="100"
