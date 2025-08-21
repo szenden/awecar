@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { httpPost } from '@/_lib/server/query-api';
 
 export async function authenticateAdmin(prevState: { error: string }, formData: FormData)
-  : Promise<{ error: string }> {
+  : Promise<{ error: string } | never> {
 
   const username = formData.get('username') as string;
   const password = formData.get('password') as string;
@@ -12,21 +12,30 @@ export async function authenticateAdmin(prevState: { error: string }, formData: 
   // For development, allow hardcoded admin credentials
   // In production, this should use proper authentication API
   if (username === 'admin' && password === 'admin123') {
-    // Create a simple admin session
-    const mockJwt = btoa(JSON.stringify({
-      username: 'admin',
-      role: 'system_admin',
-      isSystemAdmin: true,
-      exp: Math.floor(Date.now() / 1000) + (60 * 60 * 8) // 8 hours
-    }));
+    try {
+      // Create a simple admin session
+      const mockJwt = btoa(JSON.stringify({
+        username: 'admin',
+        role: 'system_admin',
+        isSystemAdmin: true,
+        exp: Math.floor(Date.now() / 1000) + (60 * 60 * 8) // 8 hours
+      }));
+      
+      const mockPublicJwt = btoa(JSON.stringify({
+        username: 'admin',
+        role: 'system_admin',
+        isSystemAdmin: true
+      }));
+      
+      console.log('Admin login successful, creating session...');
+      await createSession(mockJwt, mockPublicJwt);
+      console.log('Session created, redirecting to /admin');
+    } catch (error) {
+      console.error('Session creation failed:', error);
+      return { error: "Session creation failed" };
+    }
     
-    const mockPublicJwt = btoa(JSON.stringify({
-      username: 'admin',
-      role: 'system_admin',
-      isSystemAdmin: true
-    }));
-    // console.log('mockJwt', mockJwt);
-    await createSession(mockJwt, mockPublicJwt);
+    // This redirect throws and prevents further execution
     redirect('/admin');
   }
 

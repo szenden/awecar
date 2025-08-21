@@ -13,27 +13,78 @@ export function AdminAuthWrapper({ children }: AdminAuthWrapperProps) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    checkAuthentication()
+    // Small delay to ensure cookies are set after redirect
+    const timer = setTimeout(() => {
+      checkAuthentication()
+    }, 100)
+    
+    return () => clearTimeout(timer)
   }, [])
 
   const checkAuthentication = async () => {
     try {
-      // Check if there's a session cookie
-      const sessionCookie = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('session='))
+      console.log('Checking admin authentication...')
+      console.log('All cookies:', document.cookie)
 
-      if (!sessionCookie) {
+      // Check for JWT cookie first (since session cookie is httpOnly)
+      const jwtCookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('jwt='))
+
+      console.log('JWT cookie exists:', !!jwtCookie)
+
+      if (jwtCookie) {
+        try {
+          const jwtValue = jwtCookie.split('=')[1]
+          const payload = JSON.parse(atob(jwtValue))
+          console.log('JWT payload:', payload)
+          
+          // Check if user is system admin
+          if (payload.isSystemAdmin || payload.role === 'system_admin') {
+            console.log('Admin authentication successful')
+            setIsAuthenticated(true)
+            setIsLoading(false)
+            return
+          } else {
+            console.log('User is not system admin')
+            setIsAuthenticated(false)
+            setIsLoading(false)
+            router.push('/admin/login')
+            return
+          }
+        } catch (jwtError) {
+          console.error('JWT decode error:', jwtError)
+        }
+      }
+
+      // Check for session timestamp as a fallback indicator
+      const timestampCookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('session_timestamp='))
+
+      console.log('Session timestamp exists:', !!timestampCookie)
+
+      if (!jwtCookie && !timestampCookie) {
+        console.log('No authentication cookies found, redirecting to login')
         setIsAuthenticated(false)
         setIsLoading(false)
         router.push('/admin/login')
         return
       }
 
-      // For development, we'll accept any session cookie as valid
-      // In production, you'd validate the JWT properly
-      setIsAuthenticated(true)
+      // For development fallback with session timestamp
+      if (timestampCookie) {
+        console.log('Using session timestamp fallback authentication')
+        setIsAuthenticated(true)
+        setIsLoading(false)
+        return
+      }
+
+      // If we get here, something went wrong
+      console.log('Authentication check inconclusive, redirecting to login')
+      setIsAuthenticated(false)
       setIsLoading(false)
+      router.push('/admin/login')
     } catch (error) {
       console.error('Authentication check failed:', error)
       setIsAuthenticated(false)

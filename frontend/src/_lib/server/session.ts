@@ -33,13 +33,22 @@ interface SessionPayload extends JWTPayload{
   }
 }
 export async function createSession(rootJwt: string,publicJwt: string) {
+  console.log('Creating session...')
+  console.log('SESSION_SECRET exists:', !!secretKey)
+  console.log('SESSION_TIMEOUT:', sessionTimeoutInSecondsString)
     
   if(!sessionTimeoutInSecondsString) throw new Error('NEXT_PUBLIC_SESSION_TIMEOUT env not set');
  
   const expiresAt = new Date(Date.now());   
   expiresAt.setSeconds(expiresAt.getSeconds() + parseInt(sessionTimeoutInSecondsString)); 
+  console.log('Session expires at:', expiresAt)
+  
   const session = await encrypt({ apiRootJwt:rootJwt, expiresAt })
+  console.log('Encrypted session created')
+  
   const cookieStore = await cookies() 
+  console.log('Setting cookies...')
+  
   cookieStore.set('session', session, {
     httpOnly: true, //jwt not accessible by browser
     secure: false,
@@ -47,6 +56,8 @@ export async function createSession(rootJwt: string,publicJwt: string) {
     sameSite: 'lax',
     path: '/',
   })
+  console.log('Session cookie set')
+  
   //jwt for public side resources
   cookieStore.set('jwt',  publicJwt, {
     httpOnly: false,
@@ -55,6 +66,8 @@ export async function createSession(rootJwt: string,publicJwt: string) {
     sameSite: 'lax',
     path: '/',
   })
+  console.log('JWT cookie set')
+  
    //browser app has to know when session started so it can call extend session before api jwt times out
   cookieStore.set('session_timestamp',  Date.now().toString(), {
     httpOnly: false,
@@ -63,6 +76,8 @@ export async function createSession(rootJwt: string,publicJwt: string) {
     sameSite: 'lax',
     path: '/',
   })
+  console.log('Session timestamp cookie set')
+  console.log('Session creation completed successfully')
 }
 export async function deleteSession() {
   const cookieStore = await cookies()
