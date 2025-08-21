@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Cryptography.X509Certificates;
+using Carmasters.Core.Domain.Repository;
 
 namespace System
 {
@@ -31,11 +32,11 @@ namespace System
 namespace Carmasters.Core.Domain
 {
 
-    public    abstract class Client : GuidIdentityEntity
+    public    abstract class Client : TenantEntity
     {
         IList<ClientEmail> emailAddresses = new List<ClientEmail>();
         protected Client() { }
-        protected Client(AddressComponent address, string phone, bool isAsshole, string notes, DateTime introducedAt, Guid? id = null)
+        protected Client(AddressComponent address, string phone, bool isAsshole, string notes, DateTime introducedAt, Guid tenantId, Guid? branchId = null, Guid? id = null) : base(tenantId, branchId)
         {
             this.Id = id.GetValueOrDefault();
             SetContact(address, phone, isAsshole, notes, introducedAt);

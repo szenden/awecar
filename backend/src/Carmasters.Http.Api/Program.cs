@@ -60,7 +60,8 @@ builder.Services.
 .AddDistributedMemoryCache()
 .AddApplicationOptions(builder.Configuration)
 .AddExceptionHandler<JsonExceptionHandler>()
-.AddTenantConfigurationServices();
+.AddTenantConfigurationServices()
+.AddMultiTenancy();
 
 builder.Services.AddSingleton<RateLimitStrategyFactory>();
 
@@ -79,6 +80,7 @@ app.UseExceptionHandler(exceptionHandlerApp =>
 app.UseNHibernate();
 app.UseCors("DefaultPolicy");
 app.UseMiddleware<DbConnectionScopeMiddleware>();
+app.UseMultiTenancy();
 
 /*By default, an ASP.NET Core app doesn't provide a status code page for HTTP error status codes, such as 404 - Not Found. When the app sets an HTTP 400-599 error status code that doesn't have a body, it returns the status code and an empty response body. To enable default text-only handlers for common error status codes,*/
 app.UseStatusCodePages(); 

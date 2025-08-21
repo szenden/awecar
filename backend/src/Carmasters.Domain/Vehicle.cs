@@ -4,16 +4,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
+using Carmasters.Core.Domain.Repository;
 
 namespace Carmasters.Core.Domain
 {
-    public class Vehicle: GuidIdentityEntity
+    public class Vehicle: TenantEntity
     {
         IList<VehicleRegistration> registrations = new List<VehicleRegistration>();
         protected Vehicle() { }
         public    Vehicle(
             string regNr,
             DateTime introducedAt,
+            Guid tenantId,
+            Guid? branchId = null,
             string producer = null,
             string model = null, 
             string vin = null,
@@ -26,7 +29,7 @@ namespace Carmasters.Core.Domain
             string series = null,
             string transmission = null,
             string description = null,
-            Guid? id = null)
+            Guid? id = null) : base(tenantId, branchId)
         {  
             IntroducedAt = introducedAt; 
             SetValues(regNr, producer, model, vin, odo, body, drivingSide, engine, productionDate, region, series, transmission,description);

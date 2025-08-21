@@ -15,7 +15,7 @@ namespace Carmasters.Core.Application
     public class User
     { 
         protected User() { }
-        public User(string userName, string password, string email, bool validated, byte[] profileImage,  UserIdentifier id = null)
+        public User(string userName, string password, string email, bool validated, byte[] profileImage, string tenantName = null, Guid? tenantId = null, Guid? employeeId = null, UserIdentifier id = null)
         {
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -31,16 +31,27 @@ namespace Carmasters.Core.Application
             Password = password;
             Validated = validated;
             ProfileImage = profileImage;
+            TenantName = tenantName;
+            TenantId = tenantId;
+            EmployeeId = employeeId;
             Id = id;
         }
 
         public virtual byte[] ProfileImage { get; protected set; }
         public virtual string Email { get; protected set; }
-
         public virtual bool Validated { get;protected set; }
         public virtual string UserName { get; protected set; }
         public virtual string Password { get;protected set; }
         public virtual UserIdentifier Id { get; protected internal set; }
+        
+        // Multi-tenancy properties
+        public virtual string TenantName { get; protected set; }
+        public virtual Guid? TenantId { get; protected set; }
+        public virtual Guid? EmployeeId { get; protected set; }
+        
+        // User role properties
+        public virtual bool IsSystemAdmin => string.IsNullOrEmpty(TenantName) || TenantName == "system";
+        public virtual bool IsTenantUser => !IsSystemAdmin;
 
         public override bool Equals(object obj)
         {

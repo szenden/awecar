@@ -5,7 +5,8 @@ import {
     Cog6ToothIcon, 
     QueueListIcon,
     TruckIcon,
-    UsersIcon, 
+    UsersIcon,
+    BuildingOfficeIcon,
   } from '@heroicons/react/24/outline'
 import clsx from "clsx"; 
 import { usePathname } from 'next/navigation'
@@ -16,6 +17,7 @@ const navigation = [
     { name: 'Clients', href: '/home/clients', icon: <UsersIcon aria-hidden="true" className={navigationIconClass}></UsersIcon>  },
     { name: 'Vehicles', href: '/home/vehicles', icon: <TruckIcon aria-hidden="true" className={navigationIconClass}></TruckIcon>  },
     { name: 'Inventory', href: '/home/inventory', icon: <Cog6ToothIcon aria-hidden="true" className={navigationIconClass}></Cog6ToothIcon>  },
+    { name: 'Branches', href: '/home/branches', icon: <BuildingOfficeIcon aria-hidden="true" className={navigationIconClass}></BuildingOfficeIcon>  },
     // { name: 'Services', href: '/home/services', icon: <WrenchScrewdriverIcon aria-hidden="true" className={navigationIconClass}></WrenchScrewdriverIcon>  },
 ]
  
@@ -58,6 +60,13 @@ export default   function Nav({
                         </ul>
                     </li>
                     {!onSmallScreen && <li className="mt-auto flex flex-col mb-5   ">
+                        <a
+                            href="/home/tenants"
+                            className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-400 hover:bg-gray-800 hover:text-white"
+                        >
+                            <BuildingOfficeIcon aria-hidden="true" className="size-6 shrink-0" />
+                            Tenant
+                        </a>
                         <a
                             href="/home/settings"
                             className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-400 hover:bg-gray-800 hover:text-white"

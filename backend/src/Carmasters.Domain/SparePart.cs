@@ -1,8 +1,9 @@
 ﻿using System;
+using Carmasters.Core.Domain.Repository;
 
 namespace Carmasters.Core.Domain
 {
-    public class SparePart : GuidIdentityEntity
+    public class SparePart : TenantEntity
     {
         public  virtual string Description { get; protected set; }
         public  virtual DateTime IntroducedAt { get;  }
@@ -32,7 +33,7 @@ namespace Carmasters.Core.Domain
         public virtual UmPrice UmPrice { get; protected set; }
 
         protected SparePart() { }
-        public  SparePart(string code, string name, decimal price, decimal quantity, short? discount, string description, DateTime introducedAt, Storage storage=null, Guid? id = null)
+        public  SparePart(string code, string name, decimal price, decimal quantity, short? discount, string description, DateTime introducedAt, Guid tenantId, Guid? branchId = null, Storage storage=null, Guid? id = null) : base(tenantId, branchId)
         { 
             this.storage = storage;
             this.Id = id.GetValueOrDefault(); 

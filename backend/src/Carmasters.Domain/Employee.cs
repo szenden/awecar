@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using Carmasters.Core.Domain.Repository;
 
 namespace Carmasters.Core.Domain
 {
-    public class Employee: GuidIdentityEntity
+    public class Employee: TenantEntity
     {
         public Employee() { }
-        public  Employee(string firstName, string lastName, DateTime introducedAt,string phone = null, string email= null, string proffession = null, string description = null, Guid? id = null)
+        public  Employee(string firstName, string lastName, DateTime introducedAt, Guid tenantId, Guid? branchId = null, string phone = null, string email= null, string proffession = null, string description = null, Guid? id = null) : base(tenantId, branchId)
         {
             Id = id.GetValueOrDefault();
             IntroducedAt = introducedAt;

@@ -28,9 +28,10 @@ namespace Carmasters.Http.Api.Model
 
             this.CreateMap<AddressComponent, AddressDto>()
                 .ForMember(x => x.Street, m => m.MapFrom(x => x.Street));
-                ;
-              
-             
+
+            // Multi-tenancy mappings
+            this.CreateMap<Tenant, TenantDto>();
+            this.CreateMap<Branch, BranchDto>();
         } 
 
     }

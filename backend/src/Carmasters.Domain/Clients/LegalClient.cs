@@ -7,8 +7,8 @@ namespace Carmasters.Core.Domain
     {
         string name;
         protected LegalClient():base() { }
-        public LegalClient(DateTime introducedAt, string name, string regNr ,  AddressComponent address = null, string phone = null,
-            bool isAsshole = false, string description =null, Guid? id = null) : base(address, phone, isAsshole, description,introducedAt, id)
+        public LegalClient(DateTime introducedAt, string name, string regNr, Guid tenantId, Guid? branchId = null, AddressComponent address = null, string phone = null,
+            bool isAsshole = false, string description =null, Guid? id = null) : base(address, phone, isAsshole, description,introducedAt, tenantId, branchId, id)
         {
             SetNameAndRegNr(name, regNr);
         }

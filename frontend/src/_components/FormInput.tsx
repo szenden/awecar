@@ -8,19 +8,23 @@ export interface IInputOnChange {
     (event: ChangeEvent<HTMLInputElement>): void
 }
 
-export default function FormInput({
+export function FormInput({
+    id,
     name,
     label,
     defaultValue,
     value,
-    type,
+    type = "text",
     inputError,
     placeholder,
     onInputChange,
+    onChange,
     step,
     className,
+    required,
 }: {
-    name: string,
+    id?: string,
+    name?: string,
     label?: string | undefined,
     defaultValue?: string | number | readonly string[] | undefined,
     value?: string | number | readonly string[] | undefined,
@@ -28,8 +32,10 @@ export default function FormInput({
     inputError?: string | undefined,
     placeholder?: string | undefined,
     onInputChange?: IInputOnChange,
+    onChange?: React.ChangeEventHandler<HTMLInputElement>,
     step?: string | undefined,
-    className?: string | undefined
+    className?: string | undefined,
+    required?: boolean
 }) {
      
     let hasError = false;
@@ -41,18 +47,18 @@ export default function FormInput({
             {label&&<FormLabel name={name} label={label}></FormLabel>}
             <div className="mt-2   grid grid-cols-1">
                 <input
-                    id={name}
+                    id={id || name}
                     name={name}
                     type={type}
                     step={step} 
-                    onChange={onInputChange}
+                    onChange={onChange || onInputChange}
                     defaultValue={defaultValue}
                     value={value}
-
+                    required={required}
                     placeholder={placeholder}
                     autoComplete={name}
                     aria-invalid={hasError}
-                    aria-describedby={name + '-error'}
+                    aria-describedby={(name || id) + '-error'}
                     className={clsx(className,
                         hasError ? "col-start-1 row-start-1 text-red-900 outline-red-300 placeholder:text-red-400 focus:outline-red-600"
                             : "text-gray-900 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600"
@@ -63,13 +69,15 @@ export default function FormInput({
                     className="pointer-events-none col-start-1 row-start-1 mr-3 size-5 self-center justify-self-end text-red-500 sm:size-4"
                 />}
             </div>
-            {hasError && <p id={name + '-error'} className="mt-2 text-sm text-red-600">
+            {hasError && <p id={(name || id) + '-error'} className="mt-2 text-sm text-red-600">
                 {inputError}
             </p>}
 
         </>
     )
 }
+
+export default FormInput
 
 export function FormRadio({
     id,

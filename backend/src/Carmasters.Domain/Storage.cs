@@ -1,8 +1,9 @@
 ﻿using System;
+using Carmasters.Core.Domain.Repository;
 
 namespace Carmasters.Core.Domain
 {
-    public class Storage : GuidIdentityEntity
+    public class Storage : TenantEntity
     {
         private string name;
         private string address;
@@ -13,7 +14,7 @@ namespace Carmasters.Core.Domain
         public  virtual DateTime IntroducedAt { get; }
 
         protected Storage() { }
-        public Storage( System.String name, System.String address,string description,DateTime introducedAt)
+        public Storage( System.String name, System.String address,string description,DateTime introducedAt, Guid tenantId, Guid? branchId = null) : base(tenantId, branchId)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new UserException("Name is required.");
             this.Id = Guid.Empty;
@@ -25,7 +26,7 @@ namespace Carmasters.Core.Domain
          
         public  virtual  SparePart AddNewSparePart(string code, string name, decimal price, decimal quantity, short? discount,string description)
         {
-            var spare = new SparePart(code, name, price, quantity, discount,description,DateTime.Now);
+            var spare = new SparePart(code, name, price, quantity, discount,description,DateTime.Now, TenantId, BranchId);
             spare.StoredAt(this);
             return spare;
         }
