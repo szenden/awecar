@@ -1,5 +1,6 @@
 using Carmasters.Core.Application.Middleware;
 using Carmasters.Core.Application.Services;
+using Carmasters.Core.Repository.Postgres;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +12,7 @@ namespace Carmasters.Core.Application.Extensions.DependencyInjection
         {
             services.AddScoped<ITenantContext, TenantContext>();
             services.AddScoped<ITenantRepository, TenantRepository>();
+            services.AddScoped<ITenantManagementService, TenantManagementService>();
             
             return services;
         }
