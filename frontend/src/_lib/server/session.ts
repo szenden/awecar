@@ -79,3 +79,48 @@ export async function getJwt() {
   }
   return payload.apiRootJwt;
 }
+
+export async function getSession() {
+  const session = (await cookies()).get('session')?.value;
+  
+  if (!session) {
+    return null
+  }
+
+  const payload = await decrypt(session)
+  
+  if (!payload || !payload.apiRootJwt) {
+    return null
+  }
+  
+  return payload.apiRootJwt;
+}
+
+export async function verifySession() {
+  const session = await getSession()
+  
+  if (!session) {
+    return null
+  }
+
+  try {
+    // For development, decode the session to check if it's valid
+    const parts = session.split('.')
+    if (parts.length !== 3) {
+      return null
+    }
+    
+    // Basic validation - in production you'd verify the signature
+    const payload = JSON.parse(atob(parts[1]))
+    
+    // Check if session has expired
+    if (payload.exp && payload.exp < Math.floor(Date.now() / 1000)) {
+      return null
+    }
+    
+    return payload
+  } catch (error) {
+    console.log('Session verification failed:', error)
+    return null
+  }
+}

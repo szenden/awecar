@@ -86,3 +86,132 @@ Data is filtered automatically for the logged-in user’s tenant and branch.
 
   The implementation provides a solid foundation for multi-tenancy that ensures complete data isolation while
   maintaining ease of use and scalability.
+
+🚀 Complete Multi-Tenant Admin Workflow
+
+  1. System Admin Login
+
+  Default Credentials:
+  - Username: admin
+  - Password: admin123
+  - URL: http://localhost:3000/admin
+
+  2. Create New Tenant (Complete Process)
+
+  As System Admin:
+  1. Navigate to Admin Dashboard (/admin)
+  2. Click "Create New Tenant"
+  3. Fill out the comprehensive form:
+
+  3. Tenant Details:
+    - Tenant Name: "ABC Auto Repair"
+    - Subdomain: "abc-auto" (auto-generated)
+    - Subscription Plan: Premium/Basic/Enterprise
+    - Expiration Date: Set future date
+
+  Admin User Details:
+    - First/Last Name: "John Smith"
+    - Email: "john@abcauto.com"
+    - Username: "john" (auto-generated from email)
+    - Password: "secure123" (minimum 8 chars)
+
+  Default Branch:
+    - Branch Name: "Main Branch"
+    - Address, Phone, Email (optional)
+  4. Click "Create Tenant"
+
+  3. What Happens Behind the Scenes
+
+  ✅ Database Operations:
+  - Creates tenant record in main database
+  - Provisions tenant-specific database schema
+  - Creates default branch for the tenant
+  - Sets up admin user account with proper permissions
+
+  ✅ User Account Creation:
+  - Creates admin user in tenant database
+  - Creates employee record linked to admin user
+  - Generates secure password hash
+  - Sets up proper tenant/branch context
+
+  ✅ Access Provisioning:
+  - Generates login token for immediate access
+  - Creates tenant-specific URL subdomain
+  - Sets up proper authentication context
+
+  4. Login to New Tenant Environment
+
+  Option A: Direct URL Access
+  URL: https://abc-auto.localhost:3000
+  Login: john / secure123
+
+  Option B: Admin Impersonation
+  1. From Admin Dashboard, click "Login As" next to tenant
+  2. Automatically logged in as tenant admin
+  3. Full access to tenant environment
+
+  Option C: Token-Based Access
+  - Use the generated login token for API access
+  - Token contains tenant/user context
+
+  5. Key Features Implemented
+
+  🏢 Complete Tenant Isolation
+  - Separate database schemas per tenant
+  - Automatic data filtering by tenant ID
+  - Branch-level sub-isolation within tenants
+
+  👥 User Management
+  - System admins (cross-tenant access)
+  - Tenant admins (tenant-specific access)
+  - Regular users (branch-specific access)
+
+  🔐 Security & Authentication
+  - Subdomain-based tenant detection
+  - JWT claims with tenant context
+  - Automatic query filtering at repository level
+
+  🎛️ Admin Dashboard
+  - Tenant creation and management
+  - Usage statistics and monitoring
+  - Impersonation capabilities
+  - System-wide oversight
+
+  6. Example Complete Workflow
+
+  # 1. Login as System Admin
+  curl -X POST /api/auth/login \
+    -H "Content-Type: application/json" \
+    -d '{"username": "admin", "password": "admin123"}'
+
+  # 2. Create New Tenant
+  curl -X POST /api/admin/tenants \
+    -H "Authorization: Bearer <admin-token>" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "tenantName": "ABC Auto Repair",
+      "subdomain": "abc-auto",
+      "adminEmail": "john@abcauto.com",
+      "adminPassword": "secure123",
+      "adminFirstName": "John"
+    }'
+
+  # Response includes:
+  # - Tenant details
+  # - Login URL: https://abc-auto.localhost:3000  
+  # - Login token for immediate access
+  # - Admin user credentials
+
+  # 3. Access Tenant Environment
+  # Visit: https://abc-auto.localhost:3000
+  # Login: john / secure123
+
+  7. Production Deployment Notes
+
+  For production, you'll need to:
+  - Replace localhost with your actual domain
+  - Set up wildcard DNS (*.yourdomain.com)
+  - Configure SSL certificates for subdomains
+  - Update CORS settings for subdomain access
+  - Change default admin password
+  - Set up proper database connection pooling

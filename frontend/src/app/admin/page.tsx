@@ -2,9 +2,10 @@ import { Container } from "@/_components/layout/Container"
 import { Card } from "@/_components/Card"
 import { PrimaryButton } from "@/_components/PrimaryButton"
 import { FormTitle } from "@/_components/FormTitle"
+import { AdminAuthWrapper } from "@/_components/AdminAuthWrapper"
 import Link from "next/link"
 
-export default async function AdminDashboardPage() {
+export default function AdminDashboardPage() {
   // This would typically fetch tenant stats from the API
   const stats = {
     totalTenants: 5,
@@ -35,14 +36,15 @@ export default async function AdminDashboardPage() {
   ]
 
   return (
-    <Container>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <FormTitle>System Administration</FormTitle>
-          <Link href="/admin/tenants/new">
-            <PrimaryButton>Create New Tenant</PrimaryButton>
-          </Link>
-        </div>
+    <AdminAuthWrapper>
+      <Container>
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <FormTitle>System Administration</FormTitle>
+            <Link href="/admin/tenants/new">
+              <PrimaryButton>Create New Tenant</PrimaryButton>
+            </Link>
+          </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -156,6 +158,7 @@ export default async function AdminDashboardPage() {
           </Card>
         </div>
       </div>
-    </Container>
+      </Container>
+    </AdminAuthWrapper>
   )
 }

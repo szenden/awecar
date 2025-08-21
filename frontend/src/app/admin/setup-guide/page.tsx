@@ -1,10 +1,12 @@
 import { Container } from "@/_components/layout/Container"
 import { Card } from "@/_components/Card"
 import { FormTitle } from "@/_components/FormTitle"
+import { AdminAuthWrapper } from "@/_components/AdminAuthWrapper"
 
 export default function SetupGuidePage() {
   return (
-    <Container>
+    <AdminAuthWrapper>
+      <Container>
       <div className="space-y-6">
         <FormTitle>Multi-Tenant Setup Guide</FormTitle>
 
@@ -162,6 +164,7 @@ export default function SetupGuidePage() {
           </div>
         </Card>
       </div>
-    </Container>
+      </Container>
+    </AdminAuthWrapper>
   )
 }
