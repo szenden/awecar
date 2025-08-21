@@ -21,7 +21,7 @@ export function AdminAuthWrapper({ children }: AdminAuthWrapperProps) {
     return () => clearTimeout(timer)
   }, [])
 
-  const checkAuthentication = async () => {
+  const checkAuthentication = () => {
     try {
       console.log('Checking admin authentication...')
       console.log('All cookies:', document.cookie)

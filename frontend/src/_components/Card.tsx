@@ -25,7 +25,7 @@ export function CardHeader({
     )
 }
 
-export async function Card({   header, children }: {  header?: React.ReactNode, children: React.ReactNode }) {
+export function Card({   header, children }: {  header?: React.ReactNode, children: React.ReactNode }) {
     return ( 
         <div className={clsx(  "xl:divide-y xl:divide-gray-100   overflow-hidden xl:rounded-lg bg-white xl:shadow-sm")}>
             {header}
